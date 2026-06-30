@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CineTup.Presentation.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
