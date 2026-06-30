@@ -9,11 +9,14 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  BUILD_CONFIGURATION: Release
+
 jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -24,13 +27,13 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore dependencies
-        run: dotnet restore ../../CineTupFinal/CineTupFinal.sln
+        run: dotnet restore .\CineTup.slnx
 
       - name: Build application
-        run: dotnet build ../../CineTupFinal/CineTupFinal.sln --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+        run: dotnet build .\CineTup.slnx --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish .\CineTup.slnx -c Release -o "${{env.DOTNET_ROOT}}/myapp" --no-restore
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
