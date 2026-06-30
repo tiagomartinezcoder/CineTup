@@ -33,7 +33,7 @@ jobs:
         run: dotnet build .\CineTup.slnx --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
       - name: dotnet publish
-        run: dotnet publish .\CineTup.slnx -c Release -o "${{env.DOTNET_ROOT}}/myapp" --no-restore
+        run: dotnet publish .\CineTup.Presentation\CineTup.Presentation.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp" --no-restore
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -67,6 +67,9 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_EB0C379157D740B78B1759A600F7A77B }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EDB9C997F0C44E9B947B31341C43870A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_13DD45A3B3504704A6AF45B9262F4845 }}
+
+      - name: Restore dependencies
+        run: dotnet restore .\CineTup.Presentation\CineTup.Presentation.csproj
 
       - name: Install dotnet-ef tool
         run: dotnet tool install --global dotnet-ef --version 10.*
