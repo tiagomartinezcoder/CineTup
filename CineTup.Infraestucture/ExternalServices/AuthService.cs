@@ -74,9 +74,10 @@ namespace CineTup.Infraestucture.ExternalServices
 
             try
             {
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex) {
+                Console.WriteLine(ex.ToString());
                 throw new DatabaseException("Error al guardar los datos en la base de datos.", 
                     ex);
             }

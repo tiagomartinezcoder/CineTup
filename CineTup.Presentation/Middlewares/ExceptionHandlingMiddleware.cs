@@ -49,6 +49,8 @@ namespace CineTup.Presentation.Middlewares
                 status = statusCode,
                 error = message,
                 exception = exception.Message,
+                innerException = exception.InnerException?.Message,
+                innerExceptionComplete = exception.InnerException?.ToString(),
                 type = exception.GetType().Name
             };
 
