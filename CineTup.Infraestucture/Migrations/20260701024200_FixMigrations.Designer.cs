@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineTup.Infraestucture.Migrations
 {
     [DbContext(typeof(CineTupDbContext))]
-    [Migration("20260629233403_AddAvatarUrlToUser")]
-    partial class AddAvatarUrlToUser
+    [Migration("20260701024200_FixMigrations")]
+    partial class FixMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

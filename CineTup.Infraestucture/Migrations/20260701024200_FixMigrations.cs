@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,22 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CineTup.Infraestucture.Migrations
 {
     /// <inheritdoc />
-    public partial class MakeDeletedDateTimeNullable : Migration
+    public partial class FixMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DeletedDateTime",
-                table: "Tickets",
+                table: "User",
                 type: "datetime2",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2");
 
+            migrationBuilder.AddColumn<string>(
+                name: "AvatarUrl",
+                table: "User",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DeletedDateTime",
-                table: "User",
+                table: "Tickets",
                 type: "datetime2",
                 nullable: true,
                 oldClrType: typeof(DateTime),
@@ -34,6 +40,12 @@ namespace CineTup.Infraestucture.Migrations
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2");
+
+            migrationBuilder.AddColumn<string>(
+                name: "AvatarUrl",
+                table: "SysAdmins",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DeletedDateTime",
@@ -59,6 +71,12 @@ namespace CineTup.Infraestucture.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2");
 
+            migrationBuilder.AddColumn<string>(
+                name: "AvatarUrl",
+                table: "Clients",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DeletedDateTime",
                 table: "Admins",
@@ -66,25 +84,49 @@ namespace CineTup.Infraestucture.Migrations
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2");
+
+            migrationBuilder.AddColumn<string>(
+                name: "AvatarUrl",
+                table: "Admins",
+                type: "nvarchar(max)",
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "DeletedDateTime",
-                table: "Tickets",
-                type: "datetime2",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
+            migrationBuilder.DropColumn(
+                name: "AvatarUrl",
+                table: "User");
+
+            migrationBuilder.DropColumn(
+                name: "AvatarUrl",
+                table: "SysAdmins");
+
+            migrationBuilder.DropColumn(
+                name: "AvatarUrl",
+                table: "Clients");
+
+            migrationBuilder.DropColumn(
+                name: "AvatarUrl",
+                table: "Admins");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "DeletedDateTime",
                 table: "User",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "DeletedDateTime",
+                table: "Tickets",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
@@ -94,6 +136,7 @@ namespace CineTup.Infraestucture.Migrations
                 table: "SysAdmins",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
@@ -103,6 +146,7 @@ namespace CineTup.Infraestucture.Migrations
                 table: "ShowTimes",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
@@ -112,6 +156,7 @@ namespace CineTup.Infraestucture.Migrations
                 table: "Movies",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
@@ -121,6 +166,7 @@ namespace CineTup.Infraestucture.Migrations
                 table: "Clients",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
@@ -130,6 +176,7 @@ namespace CineTup.Infraestucture.Migrations
                 table: "Admins",
                 type: "datetime2",
                 nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
                 oldNullable: true);
