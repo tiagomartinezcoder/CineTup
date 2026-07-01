@@ -28,7 +28,6 @@ namespace CineTup.Application.Services
         {
             var showTimes = await _showTimeRepository.GetAllAsync();
             return showTimes
-                .OrderBy(x => x.StartTime)
                 .Select(x => x.ToShowTimeResponse())
                 .ToList();
         }

@@ -38,6 +38,9 @@ namespace CineTup.Application.Services
 
         public async Task<MovieResponse> CreateAsync(MovieRequest movie)
         {
+            if (await _movieRepository.ExistsByTitleAsync(movie.Title))
+                throw new ValidationException("Ya existe una película con ese título.");
+
             var newMovie = movie.ToMovie();
             var createdMovie = await _movieRepository.AddAsync(newMovie);
             return createdMovie.ToMovieResponse();
@@ -52,24 +55,17 @@ namespace CineTup.Application.Services
 
             await _movieRepository.DeleteAsync(id);
         }
-        public async Task UpdateAsync(MovieRequest movie, int id)
+        public async Task UpdateAsync(MovieUpdateRequest movie, int id)
         {
             var movieToUpdate = await _movieRepository.GetByIdAsync(id);
 
             if (movieToUpdate == null)
                 throw new NotFoundException("No se encontro la pelicula");
 
+            if (movie.Title != null && await _movieRepository.ExistsByTitleAsync(movie.Title, id))
+                throw new ValidationException("Ya existe una película con ese título.");
 
-            movieToUpdate.Title = movie.Title;
-            movieToUpdate.Director = movie.Director;
-            movieToUpdate.Category = movie.Category;
-            movieToUpdate.Summary = movie.Summary;
-            movieToUpdate.ImageUrl = movie.ImageUrl;
-            movieToUpdate.BannerUrl = movie.BannerUrl;
-            movieToUpdate.Duration = movie.Duration;
-            movieToUpdate.Language = movie.Language;
-            movieToUpdate.IsAvailable = movie.IsAvailable;
-
+            movieToUpdate.ApplyUpdate(movie);
 
             await _movieRepository.UpdateAsync(movieToUpdate);
         }

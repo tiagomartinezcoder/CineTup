@@ -11,7 +11,7 @@ namespace CineTup.Application.Abstractions
         Task<List<MovieResponse>> GetAllAsync();
         Task<MovieResponse> GetByIdAsync(int id);
         Task<MovieResponse> CreateAsync(MovieRequest movie);
-        Task UpdateAsync(MovieRequest movie, int id);
+        Task UpdateAsync(MovieUpdateRequest movie, int id);
         Task DeleteAsync(int id);
         
     }

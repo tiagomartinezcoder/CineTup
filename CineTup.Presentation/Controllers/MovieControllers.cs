@@ -59,7 +59,7 @@ namespace CineTup.Presentation.Controllers
 
         [Authorize(Policy = Policies.AdminOnly)]
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAsync([FromBody] MovieRequest movie, [FromRoute] int id)
+        public async Task<ActionResult> UpdateAsync([FromBody] MovieUpdateRequest movie, [FromRoute] int id)
         {
             await _movieService.UpdateAsync(movie, id);
             return NoContent();

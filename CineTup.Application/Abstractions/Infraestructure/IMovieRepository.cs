@@ -8,5 +8,6 @@ namespace CineTup.Application.Abstractions.Infraestructure
     public interface IMovieRepository : IBaseRepository<Movie>
     {
         Task<List<Movie>> GetAllWithShowTimesAsync();
+        Task<bool> ExistsByTitleAsync(string title, int? excludeId = null);
     }
 }

@@ -63,7 +63,7 @@ builder.Services.AddHttpClient<ITmdbService, TmdbService>(client =>
         new System.Net.Http.Headers.AuthenticationHeaderValue(
             "Bearer",
             builder.Configuration["Tmdb:BearerToken"]!);
-});
+}).AddStandardResilienceHandler();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -97,7 +97,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
-app.UseCors(x  => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseAuthentication();
 app.UseAuthorization();

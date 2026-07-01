@@ -52,9 +52,7 @@ namespace CineTup.Infraestucture.ExternalServices
             {
                 throw new ValidationException("La contraseña debe tener al menos 8 caracteres.");
             }
-            bool emailExists = _context.Clients.Any(c => c.Email == request.Email)
-                           || _context.Admins.Any(a => a.Email == request.Email)
-                           || _context.SysAdmins.Any(u => u.Email == request.Email);
+            bool emailExists = await _context.Users.AnyAsync(u => u.Email == request.Email);
             if (emailExists)
             {
                 throw new ConflictException($"El email '{request.Email}' ya está registrado.");
@@ -95,70 +93,30 @@ namespace CineTup.Infraestucture.ExternalServices
         public async Task<AuthResponse> SingIn(SignInRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
-            {
                 throw new ValidationException("El email es obligatorio.");
-            }
 
             if (string.IsNullOrWhiteSpace(request.Password))
-            {
                 throw new ValidationException("La contraseña es obligatoria.");
-            }
 
-            int userId;
-            string rol;
-            string? avatarUrl = null;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+                throw new UnauthorizedException("Credenciales inválidas.");
 
-            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Email == request.Email);
-            if (client != null)
+            string rol = user switch
             {
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, client.Password))
-                {
-                    throw new UnauthorizedException("Credenciales inválidas.");
-                }
-                userId = client.Id;
-                rol = "Client";
-                avatarUrl = client.AvatarUrl;
-            }
-            else
-            {
-                var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == request.Email);
-                if (admin != null)
-                {
-                    if (!BCrypt.Net.BCrypt.Verify(request.Password, admin.Password))
-                    {
-                        throw new UnauthorizedException("Credenciales inválidas.");
-                    }
-                    userId = admin.Id;
-                    rol = "Admin";
-                    avatarUrl = admin.AvatarUrl;
+                Client => "Client",
+                Admin => "Admin",
+                SysAdmin => "SysAdmin",
+                _ => throw new Exception("Tipo de usuario desconocido")
+            };
 
-                }
-                else
-                {
-                    var sysAdmin = await _context.SysAdmins.FirstOrDefaultAsync(u => u.Email == request.Email);
-                    if (sysAdmin != null)
-                    {
-                        if (!BCrypt.Net.BCrypt.Verify(request.Password, sysAdmin.Password))
-                        {
-                            throw new UnauthorizedException("Credenciales inválidas.");
-                        }
-                        userId = sysAdmin.Id;
-                        rol = "SysAdmin";
-                        avatarUrl = sysAdmin.AvatarUrl;
-                    }
-                    else
-                    {
-                        throw new UnauthorizedException("Credenciales inválidas.");
-                    }
-                }
-            }
             return new AuthResponse
             {
-                Token = GenerateToken(userId, request.Email, rol),
+                Token = GenerateToken(user.Id, user.Email, rol),
                 Rol = rol,
-                UserId = userId,
-                Email = request.Email,
-                AvatarUrl = avatarUrl
+                UserId = user.Id,
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
             };
         }
         private string GenerateToken(int userId, string email, string rol)

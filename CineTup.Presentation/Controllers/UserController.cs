@@ -1,14 +1,14 @@
 using CineTup.Application.Abstractions;
-using CineTup.Application.Exceptions;
+using CineTup.Application.Requests;
 using CineTup.Application.Responses;
 using CineTup.Presentation.Authorization;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace CineTup.Presentation.Controllers
 {
+    [Authorize(Policy = Policies.SysAdminOnly)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -29,20 +29,17 @@ namespace CineTup.Presentation.Controllers
             return Ok(users);
         }
 
+        [HttpPut("{id}/role")]
+        public async Task<ActionResult> UpdateRoleAsync([FromRoute] int id, [FromBody] UpdateRoleRequest request)
+        {
+            await _userService.UpdateRoleAsync(id, request);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAsync([FromRoute] int id)
         {
             await _userService.DeleteUserAsync(id);
-            return NoContent();
-        }
-
-        [HttpPost("{id}/assign-role")]
-        public async Task<ActionResult> AssignRoleAsync(
-            [FromRoute] int id, 
-            [FromQuery] string currentRole, 
-            [FromQuery] string newRole)
-        {
-            await _userService.AssignRoleAsync(id, currentRole, newRole);
             return NoContent();
         }
     }

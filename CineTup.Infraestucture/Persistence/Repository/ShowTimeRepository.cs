@@ -11,6 +11,20 @@ namespace CineTup.Infraestucture.Persistence.Repository
         {
         }
 
+        public override async Task<List<ShowTime>> GetAllAsync()
+        {
+            return await _dbSet
+                .Where(st => !st.IsDeleted)
+                .OrderBy(st => st.StartTime)
+                .ToListAsync();
+        }
+
+        public override async Task<ShowTime?> GetByIdAsync(int id)
+        {
+            return await _dbSet
+                .FirstOrDefaultAsync(st => st.Id == id && !st.IsDeleted);
+        }
+
         public async Task<bool> ExistsOverlappingShowTimeAsync(int movieId, DateTime startTime, DateTime endTime, int? excludeShowTimeId = null)
         {
             return await _dbSet.AnyAsync(st =>
@@ -23,22 +37,26 @@ namespace CineTup.Infraestucture.Persistence.Repository
 
         public override async Task DeleteAsync(int id)
         {
-            var showTime = await _context.Set<ShowTime>()
-                .Include(st => st.Tickets)
-                .FirstOrDefaultAsync(st => st.Id == id && !st.IsDeleted);
+            var tickets = await _context.Set<Ticket>()
+                .Where(t => t.ShowTimeId == id && !t.IsDeleted)
+                .ToListAsync();
 
-            if (showTime == null) return;
-
-            foreach (var ticket in showTime.Tickets.Where(t => !t.IsDeleted))
+            foreach (var ticket in tickets)
             {
                 ticket.IsDeleted = true;
                 ticket.DeletedDateTime = DateTime.UtcNow;
                 ticket.UpdateDateTime = DateTime.UtcNow;
             }
 
-            showTime.IsDeleted = true;
-            showTime.DeletedDateTime = DateTime.UtcNow;
-            showTime.UpdateDateTime = DateTime.UtcNow;
+            var showTime = await _dbSet
+                .FirstOrDefaultAsync(st => st.Id == id && !st.IsDeleted);
+
+            if (showTime != null)
+            {
+                showTime.IsDeleted = true;
+                showTime.DeletedDateTime = DateTime.UtcNow;
+                showTime.UpdateDateTime = DateTime.UtcNow;
+            }
 
             await SaveChangesAsync();
         }

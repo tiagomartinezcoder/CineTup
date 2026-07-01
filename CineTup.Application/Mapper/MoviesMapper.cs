@@ -39,6 +39,28 @@ namespace CineTup.Application.Mapper
                 IsDeleted = false
             };
         }
+
+        public static void ApplyUpdate(this Movie movie, MovieUpdateRequest update)
+        {
+            if (update.Title != null)
+                movie.Title = update.Title;
+            if (update.Director != null)
+                movie.Director = update.Director;
+            if (update.Category != null)
+                movie.Category = update.Category;
+            if (update.Summary != null)
+                movie.Summary = update.Summary;
+            if (update.ImageUrl != null)
+                movie.ImageUrl = update.ImageUrl;
+            if (update.BannerUrl != null)
+                movie.BannerUrl = update.BannerUrl;
+            if (update.Duration.HasValue)
+                movie.Duration = update.Duration.Value;
+            if (update.Language != null)
+                movie.Language = update.Language;
+            if (update.IsAvailable.HasValue)
+                movie.IsAvailable = update.IsAvailable.Value;
+        }
     }
 }
         

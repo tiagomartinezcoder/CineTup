@@ -20,6 +20,14 @@ namespace CineTup.Infraestucture.Persistence.Repository
                 .ToListAsync();
         }
 
+        public async Task<bool> ExistsByTitleAsync(string title, int? excludeId = null)
+        {
+            return await _dbSet.AnyAsync(m =>
+                m.Title == title &&
+                !m.IsDeleted &&
+                m.Id != (excludeId ?? 0));
+        }
+
         public override async Task DeleteAsync(int id)
         {
             var movie = await _context.Set<Movie>()
