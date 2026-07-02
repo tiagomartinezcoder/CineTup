@@ -30,5 +30,15 @@ namespace CineTup.Application.Mapper
                 TicketPrice = ShowTime.TicketPrice
             };
         }
+
+        public static void ApplyUpdate(this ShowTime showTime, ShowTimeUpdateRequest update)
+        {
+            if (update.MovieId.HasValue)
+                showTime.MovieId = update.MovieId.Value;
+            if (update.StartTime.HasValue)
+                showTime.StartTime = update.StartTime.Value;
+            if (update.TicketPrice.HasValue)
+                showTime.TicketPrice = update.TicketPrice.Value;
+        }
     }
 }

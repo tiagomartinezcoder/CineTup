@@ -8,7 +8,7 @@ namespace CineTup.Application.Abstractions
         Task<List<ShowTimeResponse>> GetAllAsync();
         Task<ShowTimeResponse> GetByIdAsync(int id);
         Task<ShowTimeResponse> CreateAsync(ShowTimeRequest request);
-        Task UpdateAsync(ShowTimeRequest request, int id);
+        Task UpdateAsync(ShowTimeUpdateRequest request, int id);
         Task DeleteAsync(int id);
     }
 }

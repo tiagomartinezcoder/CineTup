@@ -10,7 +10,6 @@ using System.Linq;
 
 namespace CineTup.Presentation.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TicketController : ControllerBase

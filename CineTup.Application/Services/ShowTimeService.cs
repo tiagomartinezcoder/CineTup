@@ -47,6 +47,10 @@ namespace CineTup.Application.Services
                 throw new NotFoundException("No se encontró la película especificada.");
 
             var startTime = request.StartTime!.Value;
+
+            if (startTime <= DateTime.UtcNow)
+                throw new ValidationException("La función debe tener una fecha futura.");
+
             var endTime = startTime.AddMinutes(movie.Duration);
 
             if (await _showTimeRepository.ExistsOverlappingShowTimeAsync(request.MovieId, startTime, endTime))
@@ -69,26 +73,29 @@ namespace CineTup.Application.Services
             return newShowTime.ToShowTimeResponse();
         }
 
-        public async Task UpdateAsync(ShowTimeRequest request, int id)
+        public async Task UpdateAsync(ShowTimeUpdateRequest request, int id)
         {
             var showTimeToUpdate = await _showTimeRepository.GetByIdAsync(id);
 
             if (showTimeToUpdate == null)
                 throw new NotFoundException("No se encontro la funcion con id '{id}'");
 
-            var movie = await _movieRepository.GetByIdAsync(request.MovieId);
+            int movieId = request.MovieId ?? showTimeToUpdate.MovieId;
+            DateTime startTime = request.StartTime ?? showTimeToUpdate.StartTime;
+
+            if (startTime <= DateTime.UtcNow)
+                throw new ValidationException("La función debe tener una fecha futura.");
+
+            var movie = await _movieRepository.GetByIdAsync(movieId);
             if (movie == null)
                 throw new NotFoundException("No se encontró la película especificada.");
 
-            var startTime = request.StartTime!.Value;
             var endTime = startTime.AddMinutes(movie.Duration);
 
-            if (await _showTimeRepository.ExistsOverlappingShowTimeAsync(request.MovieId, startTime, endTime, id))
+            if (await _showTimeRepository.ExistsOverlappingShowTimeAsync(movieId, startTime, endTime, id))
                 throw new ValidationException("La función se superpone con otra existente para esta película.");
 
-            showTimeToUpdate.MovieId = request.MovieId;
-            showTimeToUpdate.StartTime = startTime;
-            showTimeToUpdate.TicketPrice = request.TicketPrice;
+            showTimeToUpdate.ApplyUpdate(request);
 
             await _showTimeRepository.UpdateAsync(showTimeToUpdate);
         }

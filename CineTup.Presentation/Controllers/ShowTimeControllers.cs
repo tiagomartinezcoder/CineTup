@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CineTup.Presentation.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ShowTimeController : ControllerBase
@@ -60,7 +59,7 @@ namespace CineTup.Presentation.Controllers
         [Authorize(Policy = Policies.AdminOnly)]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAsync(
-            [FromBody] ShowTimeRequest showTime,
+            [FromBody] ShowTimeUpdateRequest showTime,
             [FromRoute] int id)
         {
             await _showTimeService.UpdateAsync(showTime, id);
