@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace CineTup.Presentation.Controllers
 {
+    [Authorize(Policy = Policies.SysAdminOnly)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

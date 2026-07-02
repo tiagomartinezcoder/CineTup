@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
-
+using CineTup.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine("ASPNETCORE_ENVIRONMENT=" + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
@@ -54,6 +54,8 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddHttpClient<ITmdbService, TmdbService>(client =>
